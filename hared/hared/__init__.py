@@ -14,7 +14,7 @@ class Hare():
         self.listenhost = '0.0.0.0'
         self.listenport = 8035
         self.mqtthost = 'localhost'
-        self.mqttport = 1183
+        self.mqttport = 1883
         self.topic = "logging/hare"
 
         try:
@@ -46,12 +46,12 @@ def run(config='/usr/local/etc/hared.ini'):
         message, address = server_socket.recvfrom(1024)
         host, port = address
 
-        data = {
-            'host' : host,
-            'msg'  : message,
-        }
+        ''' convert from text to JSON to text to ensure it actually is JSON '''
+        try:
+            js = json.dumps(json.loads(message))
+        except:
+            continue
 
-        js = json.dumps(data)
         if h.verbose:
             print js
 

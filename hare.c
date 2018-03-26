@@ -6,13 +6,15 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <memory.h>
+#include <time.h>
 #include <sys/socket.h>
+#include "json.h"
 
 /*
  * hare.c (C)2018 by Jan-Piet Mens <jp@mens.de>
  */
 
-#define PORTNO  8035
+#define PORTNO  "8035"
 
 #define env(K)	( getenv(K) ? getenv(K) : "<unknown>" )
 
@@ -26,7 +28,7 @@ int send_it(bool verbose, char *hostname, char *buf)
 	hints.ai_family = AF_INET;
 	hints.ai_socktype = SOCK_DGRAM;
 
-	if ((rc = getaddrinfo(hostname, "8035", &hints, &infoptr)) != 0) {
+	if ((rc = getaddrinfo(hostname, PORTNO, &hints, &infoptr)) != 0) {
 		fprintf(stderr, "getaddrinfo: %s\n", gai_strerror(rc));
 		return (1);
 	}
@@ -51,10 +53,12 @@ int send_it(bool verbose, char *hostname, char *buf)
 
 int main(int argc, char **argv)
 {
-	char *host = argv[1], buf[BUFSIZ], myhostname[BUFSIZ];
+	char *host = argv[1], myhostname[BUFSIZ];
 	char *pamtype = env("PAM_TYPE");	/* Linux */
 	char *pamsm = env("PAM_SM_FUNC");	/* FreeBSD */
 	bool verbose = false;
+	JsonNode *json;
+	char *js;
 
 	if (strcmp(pamtype, "open_session") != 0 && strcmp(pamsm, "pam_sm_open_session") != 0) {
 		fprintf(stderr, "Neither PAM open_session nor pam_sm_open_session detected\n");
@@ -69,12 +73,17 @@ int main(int argc, char **argv)
 	if (gethostname(myhostname, sizeof(myhostname)) != 0)
 		strcpy(myhostname, "?");
 
-	snprintf(buf, sizeof(buf), "%s login to %s from %s via %s",
-		env("PAM_USER"),
-		myhostname,
-		env("PAM_RHOST"),
-		env("PAM_SERVICE"));
+	json = json_mkobject();
+	json_append_member(json, "user", json_mkstring(env("PAM_USER")));
+	json_append_member(json, "rhost", json_mkstring(env("PAM_RHOST")));
+	json_append_member(json, "service", json_mkstring(env("PAM_SERVICE")));
+	json_append_member(json, "hostname", json_mkstring(myhostname));
+	json_append_member(json, "tst", json_mknumber(time(0)));
 
-	send_it(verbose, host, buf);
+	if ((js = json_stringify(json, NULL)) != NULL) {
+		send_it(verbose, host, js);
+		free(js);
+	}
+
 	return (0);
 }

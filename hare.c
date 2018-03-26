@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
 #include <unistd.h>
 #include <netdb.h>
 #include <netinet/in.h>
@@ -15,14 +16,45 @@
 
 #define env(K)	( getenv(K) ? getenv(K) : "<unknown>" )
 
+int send_it(bool verbose, char *hostname, char *buf)
+{
+	struct addrinfo hints, *infoptr, *p;
+	char host[256];
+	int rc, sockfd;
+
+	memset(&hints, 0, sizeof hints);
+	hints.ai_family = AF_INET;
+	hints.ai_socktype = SOCK_DGRAM;
+
+	if ((rc = getaddrinfo(hostname, "8035", &hints, &infoptr)) != 0) {
+		fprintf(stderr, "getaddrinfo: %s\n", gai_strerror(rc));
+		return (1);
+	}
+
+	for (p = infoptr; p != NULL; p = p->ai_next) {
+		getnameinfo(p->ai_addr, p->ai_addrlen, host, sizeof(host), NULL, 0, NI_NUMERICHOST);
+		if (verbose) fprintf(stderr, "-> %s\n", host);
+
+		sockfd = socket(AF_INET, SOCK_DGRAM, 0);
+
+		if (sendto(sockfd, (void *)buf, strlen(buf), 0, p->ai_addr, p->ai_addrlen) < 0) {
+			perror("sendto");
+		}
+		return (0);
+	}
+
+	freeaddrinfo(infoptr);
+
+	return 0;
+}
+
+
 int main(int argc, char **argv)
 {
-	struct sockaddr_in servaddr;
-	unsigned long addr;
-	int sockfd;
 	char *host = argv[1], buf[BUFSIZ], myhostname[BUFSIZ];
 	char *pamtype = env("PAM_TYPE");	/* Linux */
-	char *pamsm = env("PAM_SM_FUNC");	/* FreeBSD https://www.freebsd.org/cgi/man.cgi?query=pam_exec */
+	char *pamsm = env("PAM_SM_FUNC");	/* FreeBSD */
+	bool verbose = false;
 
 	if (strcmp(pamtype, "open_session") != 0 && strcmp(pamsm, "pam_sm_open_session") != 0) {
 		fprintf(stderr, "Neither PAM open_session nor pam_sm_open_session detected\n");
@@ -43,17 +75,6 @@ int main(int argc, char **argv)
 		env("PAM_RHOST"),
 		env("PAM_SERVICE"));
 
-	addr = inet_addr(host);
-
-	memset(&servaddr, 0, sizeof(servaddr));
-	servaddr.sin_family = AF_INET;
-	servaddr.sin_port = htons(PORTNO);
-	memcpy((void *)&servaddr.sin_addr, (void *)&addr, sizeof(addr));
-
-	sockfd = socket(AF_INET, SOCK_DGRAM, 0);
-
-	if (sendto(sockfd, (void *)buf, strlen(buf), 0, (struct sockaddr *) &servaddr, sizeof(servaddr)) < 0) {
-		perror("sendto");
-	}
+	send_it(verbose, host, buf);
 	return (0);
 }

@@ -15,6 +15,7 @@ class Hare():
         self.listenport = 8035
         self.mqtthost = 'localhost'
         self.mqttport = 1183
+        self.topic = "logging/hare"
 
         try:
             c = ConfigParser()
@@ -23,13 +24,14 @@ class Hare():
             self.listenport = c.getint('defaults', 'listenport')
             self.mqtthost = c.get('defaults', 'mqtthost')
             self.mqttport = c.getint('defaults', 'mqttport')
+            self.topic = c.get('defaults', 'topic')
             self.verbose = c.getboolean('defaults', 'verbose')
         except:
             pass
 
     def printconfig(self):
         print "Listening for UDP on %s:%d" % (self.listenhost, self.listenport)
-        print "MQTT broker configured to %s:%d" % (self.mqtthost, self.mqttport)
+        print "MQTT broker configured to %s:%d on %s" % (self.mqtthost, self.mqttport, self.topic)
 
 def run(config='/usr/local/etc/hared.ini'):
     h = Hare(config)
@@ -53,4 +55,4 @@ def run(config='/usr/local/etc/hared.ini'):
         if h.verbose:
             print js
 
-        mqtt.single("logging/hare", js, hostname=h.mqtthost, port=h.mqttport)
+        mqtt.single(h.topic, js, hostname=h.mqtthost, port=h.mqttport)

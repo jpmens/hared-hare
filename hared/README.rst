@@ -15,7 +15,7 @@ the following defaults:
     [defaults]
     verbose = False
     listenhost = localhost
-    listenport = 8053
+    listenport = 8035
     mqtthost = 127.0.0.1
     mqttport = 1883
 

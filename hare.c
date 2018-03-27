@@ -18,6 +18,16 @@
 
 #define env(K)	( getenv(K) ? getenv(K) : "<unknown>" )
 
+JsonNode *_value(char *pamkey)
+{
+	char *p;
+
+	if ((p = getenv(pamkey)) != NULL)
+		return (json_mkstring(p));
+	return (json_mknull());
+}
+
+
 int send_it(bool verbose, char *hostname, char *buf)
 {
 	struct addrinfo hints, *infoptr, *p;
@@ -74,11 +84,13 @@ int main(int argc, char **argv)
 		strcpy(myhostname, "?");
 
 	json = json_mkobject();
-	json_append_member(json, "user", json_mkstring(env("PAM_USER")));
-	json_append_member(json, "rhost", json_mkstring(env("PAM_RHOST")));
-	json_append_member(json, "service", json_mkstring(env("PAM_SERVICE")));
-	json_append_member(json, "hostname", json_mkstring(myhostname));
 	json_append_member(json, "tst", json_mknumber(time(0)));
+	json_append_member(json, "hostname", json_mkstring(myhostname));
+
+	json_append_member(json, "user",    _value("PAM_USER"));
+	json_append_member(json, "service", _value("PAM_SERVICE"));
+	json_append_member(json, "rhost",   _value("PAM_RHOST"));
+	json_append_member(json, "tty",	    _value("PAM_TTY"));
 
 	if ((js = json_stringify(json, NULL)) != NULL) {
 		send_it(verbose, host, js);

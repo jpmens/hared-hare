@@ -20,3 +20,8 @@ _hare_ transmits a JSON string over a UDP datagram. The JSON looks like this:
 The values for `user`, `rhost`, `tty`, and `service` are set from PAM from their `PAM_` equivalents, and `hostname` will contain the _gethostname(3)_ result as determined by _hare_.
 
 Python `hared` is also installable via [https://pypi.python.org/pypi/hared/](https://pypi.python.org/pypi/hared/)
+
+## More
+
+* [hare](https://svnweb.freebsd.org/ports/head/sysutils/hare/) for FreeBSD
+* [py-hared](https://svnweb.freebsd.org/ports/head/sysutils/py-hared/) for FreeBSD

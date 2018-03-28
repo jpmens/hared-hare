@@ -18,6 +18,7 @@ the following defaults:
     listenport = 8035
     mqtthost = 127.0.0.1
     mqttport = 1883
+    topic = "logging/hare"
 
 FreeBSD:
 

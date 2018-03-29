@@ -36,11 +36,11 @@ func main() {
 
     if value, ok := os.LookupEnv("HARED_INI"); ok {
         cfgfile = value
+    }
 
-        error := gcfg.ReadFileInto(&cfg, cfgfile)
-        if error != nil {
-            fmt.Println(error)
-        }
+    error := gcfg.ReadFileInto(&cfg, cfgfile)
+    if error != nil {
+        fmt.Println(error)
     }
 
     if cfg.Defaults.Verbose {

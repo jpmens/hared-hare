@@ -44,11 +44,13 @@ def run(config='/usr/local/etc/hared.ini'):
 
     while True:
         message, address = server_socket.recvfrom(1024)
-        host, port = address
+        remote, port = address
 
         ''' convert from text to JSON to text to ensure it actually is JSON '''
         try:
-            js = json.dumps(json.loads(message))
+            data = json.loads(message)
+            data['remote'] = remote
+            js = json.dumps(data)
         except:
             continue
 

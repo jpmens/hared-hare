@@ -83,5 +83,6 @@ func main() {
         if token := c.Publish(cfg.Defaults.Topic, 0, false, message); token.Wait() && token.Error() != nil {
                     fmt.Println(token.Error())
         }
+        c.Disconnect(250)
     }
 }

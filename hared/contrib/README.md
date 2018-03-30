@@ -14,4 +14,4 @@ launches with its built-in defaults.
 
 Extra `HARED_INI` fields supported:
 - mqttuser
-- mqttpassword
+- mqttpass

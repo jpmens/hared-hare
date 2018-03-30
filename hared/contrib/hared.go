@@ -22,6 +22,8 @@ func main() {
             Mqtthost   string
             Mqttport   int
             Topic      string
+            Mqttuser   string
+            Mqttpass   string
         }
     }{}
 
@@ -68,6 +70,11 @@ func main() {
         }
 
         opts := mqtt.NewClientOptions().AddBroker("tcp://" + cfg.Defaults.Mqtthost + ":" + strconv.Itoa(cfg.Defaults.Mqttport))
+
+        if len(cfg.Defaults.Mqttuser) > 0 && len(cfg.Defaults.Mqttpass) > 0 {
+            opts.SetUsername(cfg.Defaults.Mqttuser)
+            opts.SetPassword(cfg.Defaults.Mqttpass)
+        }
 
         c := mqtt.NewClient(opts)
         if token := c.Connect(); token.Wait() && token.Error() != nil {

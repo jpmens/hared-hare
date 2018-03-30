@@ -17,22 +17,23 @@ func main() {
     cfg := struct {
         Defaults struct {
             Verbose    bool
-            Listenhost string
-            Listenport int
-            Mqtthost   string
-            Mqttport   int
-            Topic      string
-            Mqttuser   string
-            Mqttpass   string
+            UdpHost    string
+            UdpPort    int
+            MqttURI    string
+            MqttTopic  string
+            MqttQos    byte
+            MqttUser   string
+            MqttPass   string
+            MqttCAfile string
         }
     }{}
 
-    cfg.Defaults.Verbose    = false
-    cfg.Defaults.Listenhost = "0.0.0.0"
-    cfg.Defaults.Listenport = 8035
-    cfg.Defaults.Mqtthost   = "localhost"
-    cfg.Defaults.Mqttport   = 1883
-    cfg.Defaults.Topic      = "logging/hare"
+    cfg.Defaults.Verbose        = false
+    cfg.Defaults.UdpHost        = "0.0.0.0"
+    cfg.Defaults.UdpPort        = 8035
+    cfg.Defaults.MqttURI        = "tcp://localhost:1883"
+    cfg.Defaults.MqttTopic      = "logging/hare"
+    cfg.Defaults.MqttQos        = 1
 
     cfgfile := "/usr/local/etc/hared.ini"
 
@@ -49,7 +50,7 @@ func main() {
         fmt.Println(cfg)
     }
 
-    ServerAddr, _ := net.ResolveUDPAddr("udp", cfg.Defaults.Listenhost + ":" + strconv.Itoa(cfg.Defaults.Listenport))
+    ServerAddr, _ := net.ResolveUDPAddr("udp", cfg.Defaults.UdpHost + ":" + strconv.Itoa(cfg.Defaults.UdpPort))
     ServerConn, _ := net.ListenUDP("udp", ServerAddr)
     defer ServerConn.Close()
 
@@ -69,20 +70,20 @@ func main() {
             continue
         }
 
-        opts := mqtt.NewClientOptions().AddBroker("tcp://" + cfg.Defaults.Mqtthost + ":" + strconv.Itoa(cfg.Defaults.Mqttport))
+        opts := mqtt.NewClientOptions().AddBroker(cfg.Defaults.MqttURI)
 
-        if len(cfg.Defaults.Mqttuser) > 0 && len(cfg.Defaults.Mqttpass) > 0 {
-            opts.SetUsername(cfg.Defaults.Mqttuser)
-            opts.SetPassword(cfg.Defaults.Mqttpass)
+        if len(cfg.Defaults.MqttUser) > 0 && len(cfg.Defaults.MqttPass) > 0 {
+            opts.SetUsername(cfg.Defaults.MqttUser)
+            opts.SetPassword(cfg.Defaults.MqttPass)
         }
 
         c := mqtt.NewClient(opts)
         if token := c.Connect(); token.Wait() && token.Error() != nil {
                     fmt.Println(token.Error())
         }
-        if token := c.Publish(cfg.Defaults.Topic, 0, false, message); token.Wait() && token.Error() != nil {
+        if token := c.Publish(cfg.Defaults.MqttTopic, cfg.Defaults.MqttQos, false, message); token.Wait() && token.Error() != nil {
                     fmt.Println(token.Error())
         }
-        c.Disconnect(250)
+	c.Disconnect(250)
     }
 }

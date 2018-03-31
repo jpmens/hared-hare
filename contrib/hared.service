@@ -1,0 +1,14 @@
+[Unit]
+Description=Hared agent
+After=syslog.target
+After=network.target
+
+[Service]
+Environment="HARED_INI=/usr/local/etc/hared.ini"
+Type=simple
+Restart=on-failure
+ExecStart=/usr/local/sbin/hared
+RestartSec=10s
+
+[Install]
+WantedBy=multi-user.target

@@ -62,9 +62,10 @@ func main() {
     buf := make([]byte, 1024)
 
     for {
-        n,_,_ := ServerConn.ReadFromUDP(buf)
+        n,address,_ := ServerConn.ReadFromUDP(buf)
 
         message := string(buf[0:n])
+        remote := address.IP.String();
 
         if cfg.Defaults.Verbose {
            fmt.Println(message)
@@ -73,6 +74,15 @@ func main() {
         var data map[string]interface{}
         if  error := json.Unmarshal([]byte(message), &data); error != nil {
             continue
+        }
+
+        data["remote"] = remote
+        data["tst"] =  int64(data["tst"].(float64))
+        rawpayload, _ := json.Marshal(data)
+        payload := string(rawpayload)
+
+        if cfg.Defaults.Verbose {
+           fmt.Println(payload)
         }
 
         opts := mqtt.NewClientOptions().AddBroker(cfg.Defaults.MqttURI)
@@ -95,7 +105,7 @@ func main() {
                     fmt.Println(token.Error())
                     continue
         }
-        if token := c.Publish(cfg.Defaults.MqttTopic, cfg.Defaults.MqttQos, false, message); token.Wait() && token.Error() != nil {
+        if token := c.Publish(cfg.Defaults.MqttTopic, cfg.Defaults.MqttQos, false, payload); token.Wait() && token.Error() != nil {
                     fmt.Println(token.Error())
         }
 	c.Disconnect(250)

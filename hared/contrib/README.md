@@ -1,4 +1,4 @@
-`hared.go`: Golang version of reference python implementation. 
+`hared.go`: Golang version of reference python implementation.
 
 * prerequisites:
 ```
@@ -23,15 +23,20 @@ mqttTopic  = logging/hare
 mqttQos    = 1
 ```
 
-Complete `HARED_INI` example:  
+Complete `HARED_INI` example:
 ```
 [defaults]
 verbose    = False
 udpHost    = localhost
 udpPort    = 8035
+# Where to publish to (port is optional):
+# for plain MQTT:  tcp://127.0.0.1:1883
+# for TLS MQTT:    ssl://hostname.example.com:8883
 mqttURI    = tcp://127.0.0.1:1883
 mqttTopic  = logging/hare
 mqttQos    = 1
 mqttUser   = username
 mqttPass   = password
+# path to CA certificate file if mqttURI starts with "tls://"
+mqttCAfile = /etc/my/cert.pem
 ```

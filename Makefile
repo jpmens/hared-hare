@@ -11,6 +11,7 @@ test: hare
 	PAM_TYPE=open_session \
 	PAM_USER=jjolie \
 	PAM_RHOST=this.host \
+	PAM_TTY=console \
 	PAM_SERVICE=sshd ./hare 127.0.0.1
 
 clean:

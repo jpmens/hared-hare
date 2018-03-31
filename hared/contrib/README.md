@@ -8,7 +8,7 @@
 * run as: `go run hared.go`
 * build a binary with: `go build hared.go`
 
-The Go version of _hared_ also supports the `HARED_INI` configuration. If the
+The Go version of _hared_ also supports the `$HARED_INI` configuration. If the
 file cannot be opened/parsed, a diagnostic message is issued and the program
 launches with its built-in defaults.
 

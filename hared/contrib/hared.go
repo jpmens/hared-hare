@@ -7,6 +7,9 @@ import (
     "fmt"
     "net"
     "strconv"
+    "io/ioutil"
+    "crypto/tls"
+    "crypto/x509"
     "encoding/json"
     "gopkg.in/gcfg.v1"
     "github.com/eclipse/paho.mqtt.golang"
@@ -77,9 +80,17 @@ func main() {
             opts.SetPassword(cfg.Defaults.MqttPass)
         }
 
+        if len(cfg.Defaults.MqttCAfile) > 0 {
+            CA_Pool := x509.NewCertPool()
+            severCert, _ := ioutil.ReadFile(cfg.Defaults.MqttCAfile)
+            CA_Pool.AppendCertsFromPEM(severCert)
+            opts.SetTLSConfig(&tls.Config{RootCAs: CA_Pool})
+        }
+
         c := mqtt.NewClient(opts)
         if token := c.Connect(); token.Wait() && token.Error() != nil {
                     fmt.Println(token.Error())
+                    continue
         }
         if token := c.Publish(cfg.Defaults.MqttTopic, cfg.Defaults.MqttQos, false, message); token.Wait() && token.Error() != nil {
                     fmt.Println(token.Error())

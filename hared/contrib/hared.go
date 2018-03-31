@@ -23,6 +23,7 @@ func main() {
             UdpHost    string
             UdpPort    int
             MqttURI    string
+            MqttClient string
             MqttTopic  string
             MqttQos    byte
             MqttUser   string
@@ -35,6 +36,7 @@ func main() {
     cfg.Defaults.UdpHost        = "0.0.0.0"
     cfg.Defaults.UdpPort        = 8035
     cfg.Defaults.MqttURI        = "tcp://localhost:1883"
+    cfg.Defaults.MqttClient     = "hared"
     cfg.Defaults.MqttTopic      = "logging/hare"
     cfg.Defaults.MqttQos        = 1
 
@@ -87,6 +89,7 @@ func main() {
             opts.SetTLSConfig(&tls.Config{RootCAs: CA_Pool})
         }
 
+        opts.SetClientID(cfg.Defaults.MqttClient)
         c := mqtt.NewClient(opts)
         if token := c.Connect(); token.Wait() && token.Error() != nil {
                     fmt.Println(token.Error())

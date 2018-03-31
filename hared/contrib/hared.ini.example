@@ -6,6 +6,7 @@ udpPort    = 8035
 # for plain MQTT:  tcp://127.0.0.1:1883
 # for TLS MQTT:    ssl://hostname.example.com:8883
 mqttURI    = tcp://127.0.0.1:1883
+mqttClient = hared
 mqttTopic  = logging/hare
 # mqttQos    = 1
 # mqttUser   = username

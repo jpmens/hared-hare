@@ -90,6 +90,7 @@ func main() {
         c := mqtt.NewClient(opts)
         if token := c.Connect(); token.Wait() && token.Error() != nil {
                     fmt.Println(token.Error())
+                    continue
         }
         if token := c.Publish(cfg.Defaults.MqttTopic, cfg.Defaults.MqttQos, false, message); token.Wait() && token.Error() != nil {
                     fmt.Println(token.Error())

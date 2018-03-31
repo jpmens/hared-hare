@@ -1,0 +1,13 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+import os, sys
+import hared
+
+
+try:
+    hared.run(config=os.getenv('HARED_INI', '/usr/local/etc/hared.ini'))
+except KeyboardInterrupt:
+    sys.exit(1)
+except:
+    raise

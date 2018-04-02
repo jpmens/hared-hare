@@ -46,9 +46,9 @@ func main() {
         cfgfile = value
     }
 
-    error := gcfg.ReadFileInto(&cfg, cfgfile)
-    if error != nil {
-        fmt.Println(error)
+    err := gcfg.ReadFileInto(&cfg, cfgfile)
+    if err != nil {
+        fmt.Println(err)
     }
 
     if cfg.Defaults.Verbose {
@@ -72,7 +72,7 @@ func main() {
         }
 
         var data map[string]interface{}
-        if  error := json.Unmarshal([]byte(message), &data); error != nil {
+        if  err := json.Unmarshal([]byte(message), &data); err != nil {
             continue
         }
 

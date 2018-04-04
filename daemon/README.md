@@ -31,13 +31,13 @@ udpHost    = localhost
 udpPort    = 8035
 # Where to publish to (port is optional):
 # for plain MQTT:  tcp://127.0.0.1:1883
-# for TLS MQTT:    ssl://hostname.example.com:8883
+# for TLS MQTT:    tls://hostname.example.com:8883
 mqttURI    = tcp://127.0.0.1:1883
 mqttClient = hared
 mqttTopic  = logging/hare
 mqttQos    = 1
 mqttUser   = username
 mqttPass   = password
-# path to CA certificate file if mqttURI starts with "tls://"
+# path to CA certificate file if mqttURI starts with "tls://" (or "ssl://")
 mqttCAfile = /etc/my/cert.pem
 ```

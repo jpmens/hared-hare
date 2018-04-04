@@ -25,4 +25,5 @@ Python `hared` is also installable via [https://pypi.python.org/pypi/hared/](htt
 ## More
 
 * [hare](https://svnweb.freebsd.org/ports/head/sysutils/hare/) for FreeBSD
+* [hared](https://svnweb.freebsd.org/ports/head/sysutils/hared/) for FreeBSD
 * [py-hared](https://svnweb.freebsd.org/ports/head/sysutils/py-hared/) for FreeBSD

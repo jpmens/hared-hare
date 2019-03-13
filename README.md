@@ -27,3 +27,24 @@ Python `hared` is also installable via [https://pypi.python.org/pypi/hared/](htt
 * [hare](https://svnweb.freebsd.org/ports/head/sysutils/hare/) for FreeBSD
 * [hared](https://svnweb.freebsd.org/ports/head/sysutils/hared/) for FreeBSD
 * [py-hared](https://svnweb.freebsd.org/ports/head/sysutils/py-hared/) for FreeBSD
+
+## OpenBSD
+
+OpenBSD has no PAM, but we can still use _hare_ to record SSH logins with a bit of a trick:
+
+1. Create a shell script `/etc/ssh/sshrc` with mode 0755 and owner root, with approximately the following content:
+
+```bash
+#!/bin/sh
+
+# set environment variables which will be used by hare:
+export PAM_TYPE=open_session
+export PAM_USER=$LOGNAME
+export PAM_SERVICE=ssh
+export PAM_RHOST="$(echo $SSH_CLIENT | cut -d' ' -f1)"
+export PAM_TTY=$SSH_TTY
+
+/usr/local/bin/hare 127.0.0.1
+```
+2. Ensure _hared_ is running on the address you specify for _hare_ to connect to. 
+3. Logins via SSH should now be recorded.

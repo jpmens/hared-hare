@@ -1,3 +1,4 @@
+from __future__ import print_function
 import paho.mqtt.publish as mqtt
 import socket
 import json
@@ -30,8 +31,8 @@ class Hare():
             pass
 
     def printconfig(self):
-        print "Listening for UDP on %s:%d" % (self.listenhost, self.listenport)
-        print "MQTT broker configured to %s:%d on %s" % (self.mqtthost, self.mqttport, self.topic)
+        print("Listening for UDP on %s:%d" % (self.listenhost, self.listenport))
+        print("MQTT broker configured to %s:%d on %s" % (self.mqtthost, self.mqttport, self.topic))
 
 def run(config='/usr/local/etc/hared.ini'):
     h = Hare(config)
@@ -55,6 +56,6 @@ def run(config='/usr/local/etc/hared.ini'):
             continue
 
         if h.verbose:
-            print js
+            print(js)
 
         mqtt.single(h.topic, js, hostname=h.mqtthost, port=h.mqttport)

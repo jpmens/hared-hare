@@ -5,13 +5,13 @@ def readme():
         return f.read()
 
 setup(name='hared',
-    version='1.1',
+    version='1.2',
     description='hare daemon',
     long_description=readme(),
     lassifiers=[
       'Development Status :: 3 - Alpha',
       'License :: OSI Approved :: MIT License',
-      'Programming Language :: Python :: 2.7',
+      'Programming Language :: Python :: 3.7',
       'Operating System :: POSIX',
       'Topic :: Communications',
       'Topic :: Internet',

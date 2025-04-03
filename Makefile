@@ -1,9 +1,7 @@
-CFLAGS=-Wall -Werror
-
 all: hare
 
 hare: hare.c json.o
-	$(CC) $(CFLAGS) -o hare hare.c json.o $(LDFLAGS)
+	$(CC) -Wall -Werror $(CFLAGS) -o hare hare.c json.o $(LDFLAGS)
 
 json.o: json.c json.h
 

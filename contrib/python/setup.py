@@ -5,7 +5,7 @@ def readme():
         return f.read()
 
 setup(name='hared',
-    version='1.2',
+    version='1.3',
     description='hare daemon',
     long_description=readme(),
     lassifiers=[

@@ -18,12 +18,12 @@ the following defaults:
     listenport = 8035
     mqtthost = 127.0.0.1
     mqttport = 1883
-    topic = "logging/hare"
+    topic = logging/hare
 
 FreeBSD:
 
 ::
 
-    pkg install py27-pip
+    pkg install py36-pip
 
 You are encouraged to use our Go version of ``hared``
